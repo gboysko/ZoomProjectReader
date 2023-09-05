@@ -2,6 +2,7 @@ import sys
 from enum import Enum
 from struct import unpack
 from string import Template
+from itertools import takewhile
 
 # Constants (Section Names)
 HEADER_OFFSET = 0
@@ -12,6 +13,7 @@ FADER_LENGTH = 16 * FADER_ITEM_SIZE
 PAN_OFFSET = FADER_OFFSET + FADER_LENGTH
 PAN_ITEM_SIZE = 4
 PAN_LENGTH = 16 * PAN_ITEM_SIZE
+PAN_VALUE_CENTER = 0xc
 CHORUS_SEND_OFFSET = PAN_OFFSET + PAN_LENGTH
 CHORUS_SEND_ITEM_SIZE = 4
 CHORUS_SEND_LENGTH = 16 * CHORUS_SEND_ITEM_SIZE
@@ -42,11 +44,8 @@ def get_binary_address(offset, index, item_length):
 
 # Helper function: Convert binary data into a number
 def convert_binary_to_int(binary_data):
-    # Convert the binary data to a list of integers.
-    binary_data_as_ints = [int(byte) for byte in binary_data]
-
     # If the length is greater than 4, complain...
-    if len(binary_data_as_ints) > 4:
+    if len(binary_data) > 4:
         print("Unexpected condition: Trying to convert more than 4 bytes to an integer.")
     else:
         return unpack('i', binary_data)[0]
@@ -54,11 +53,8 @@ def convert_binary_to_int(binary_data):
 
 # Helper function: Convert a binary range to characters
 def convert_binary_to_ascii(binary_data):
-    # Convert the binary data to a list of integers.
-    binary_data_as_ints = [int(byte) for byte in binary_data]
-
-    # Convert the list of integers to a string of ASCII characters.
-    ascii_characters = [chr(int) for int in binary_data_as_ints]
+    # Loop through the binary data array until the first NULL character
+    ascii_characters = (chr(int(byte)) for byte in takewhile(lambda x: x != 0, binary_data))
 
     return ''.join(ascii_characters)
 
@@ -74,13 +70,13 @@ def get_pan_str(int_value):
 
 # Get the value of GAIN from a numeric representation
 def get_gain_str(int_value):
-    # If the integer value is hex C, then return '0db'
-    if int_value == 0xC:
+    # If the integer value is PAN CENTER, then return '0db'
+    if int_value == PAN_VALUE_CENTER:
         return '0dB'
-    elif int_value < 0xC:
-        return Template('-${value}dB').substitute(value=0xc - int_value)
+    elif int_value < PAN_VALUE_CENTER:
+        return Template('-${value}dB').substitute(value=PAN_VALUE_CENTER - int_value)
     else:
-        return Template('+${value}dB').substitute(value=int_value - 0xc)
+        return Template('+${value}dB').substitute(value=int_value - PAN_VALUE_CENTER)
 
 # Get the value of the FREQ from a numeric representation (and a BAND)
 def get_freq_str(band, int_value):
@@ -103,7 +99,7 @@ def get_q_factor_str(band, int_value):
 # Define a Band of EQ settings for a Track
 class EQBandInfo:
     # Constructor
-    def __init__(self, band, on_off, gain, freq, q_factor):
+    def __init__(self, band, on_off, gain, freq, q_factor=-1):
         self.band = band
         self.on_off = on_off
         self.gain_val = gain
@@ -119,21 +115,31 @@ class EQBandInfo:
         if not self.on_off:
             return 'off'
         elif self.band == 'mid':
-            return Template('<gain=${gain}, freq=${freq}, q_factor=${q_factor}>').substitute(gain=self.gain, freq=self.freq, q_factor=self.q_factor)
+            return Template('<gain=${gain}, freq=${freq}, q_factor=${q_factor}>').substitute(self.__dict__)
         else:
-            return Template('<gain=${gain}, freq=${freq}>').substitute(gain=self.gain, freq=self.freq)
+            return Template('<gain=${gain}, freq=${freq}>').substitute(self.__dict__)
 
 # Define EQ Settings for a Track
 class EQInfo:
     # Constructor
     def __init__(self, hi_band, mid_band, lo_band):
-        self.hi_band = EQBandInfo('hi', hi_band[0], hi_band[3], hi_band[1], -1)
+        self.hi_band = EQBandInfo('hi', hi_band[0], hi_band[3], hi_band[1])
         self.mid_band = EQBandInfo('mid', mid_band[0], mid_band[3], mid_band[1], mid_band[2])
-        self.lo_band = EQBandInfo('lo', lo_band[0], lo_band[3], lo_band[1], -1)
+        self.lo_band = EQBandInfo('lo', lo_band[0], lo_band[3], lo_band[1])
 
     # Convert to a string
     def __str__(self):
-        return Template('[hi=$hi_band, mid=$mid_band, lo=$lo_band]').substitute(hi_band=self.hi_band, mid_band=self.mid_band, lo_band=self.lo_band)
+        # Gather all of the bands that are ON
+        band_info_arr = []
+        for band in [self.hi_band, self.mid_band, self.lo_band]:
+            if band.on_off:
+                band_info_arr.append(Template('$band=$info').substitute(band=band.band, info=str(band)))
+
+        # If there are no bands enabled, simply return off
+        if len(band_info_arr) == 0:
+            return "off"
+        else:
+            return "[" + ", ".join(band_info_arr) + "]"
 
     # Class method to construct from a ProjecFile object and track number
     @classmethod
@@ -154,12 +160,26 @@ class EQInfo:
 # Define information for a single Track/File
 class TrackInfo:
     # Constructor
-    def __init__(self, track_num, file_name, pan, eq_info):
+    def __init__(self, track_num, file_name, pan, eq_info, fader):
         self.track_num = track_num
         self.file_name = file_name
         self.track_name = file_name[0:8]
         self.pan = pan
         self.eq_info = eq_info
+        self.fader = fader
+
+    # How to display the file as a string
+    def __str__(self):
+        # Are we without a file name?
+        if self.file_name == "":
+            return ""
+
+        # Otherwise, construct
+        return Template('Track #$track_num: file_name=$file_name, track_name=$track_name, pan=$pan, eq_info=$eq_info, fader=$fader').substitute(self.__dict__)
+
+    # Whether a track is "used" or not
+    def is_used(self):
+        return self.file_name != ""
 
     # Class level method to construct from a ProjectFile object and a track number
     @classmethod
@@ -180,7 +200,13 @@ class TrackInfo:
         # Create an EQ Info section
         eq_info = EQInfo.extract_eq_info(project_file, track_num)
 
-        return TrackInfo(track_num, file_name, pan_str, eq_info)
+        # Get the fader address
+        fader_address = get_binary_address(FADER_OFFSET, track_num-1, FADER_ITEM_SIZE)
+
+        # Get the fader value
+        fader = convert_binary_to_int(project_file.data[fader_address:fader_address+FADER_ITEM_SIZE])
+
+        return TrackInfo(track_num, file_name, pan_str, eq_info, fader)
 
     # Class level
 
@@ -225,8 +251,10 @@ if __name__ == '__main__':
         # Loop through the Track Infos...
         print('\nTrack Info\n')
         for i in range(16):
-            # Get the information
+            # Get the track information
             track_info = project_file.get_track_info(i+1)
 
-            # Display info
-            print(Template('Track #$track_num: file_name=$file_name, track_name=$track_name, pan=$pan, eq_info=$eq_info').substitute(track_num=track_info.track_num, file_name=track_info.file_name, track_name=track_info.track_name, pan=track_info.pan, eq_info=track_info.eq_info))
+            # Is it used?
+            if track_info.is_used():
+                # Display info
+                print(track_info)
