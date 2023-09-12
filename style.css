@@ -1,0 +1,200 @@
+html,
+body {
+    padding: 0;
+    margin: 0;
+}
+
+table {
+    border-collapse: collapse;
+    border: 3px solid black;
+    margin: 1em 0;
+}
+
+table.top-section {
+    margin-top: 0;
+}
+
+table.bottom-section {
+    margin-bottom: 0;
+}
+
+table.top-section tr td.card-name {
+    width: 100px;
+}
+
+table.top-section td.proj-num {
+    width: 3ch;
+    border-right: 2px dashed #ccc;
+}
+
+table.top-section td.proj-name {
+    width: 8ch;
+}
+
+table.top-section td.proj-name-full {
+    width: 120px;
+}
+
+table.top-section td.reverb-num,
+table.top-section td.chorus-num {
+    width: 2ch;
+    border-right: 2px dashed #ccc;
+}
+
+table.top-section td.reverb-name,
+table.top-section td.chorus-name {
+    width: 15ch;
+}
+
+table td,
+table th {
+    border: 1px solid black;
+    padding: 0.375em;
+}
+
+table tbody tr {
+    height: 32px;
+}
+
+th.bottom {
+    vertical-align: bottom;
+}
+
+span.rotate-ccw {
+    white-space: nowrap;
+    -webkit-writing-mode: vertical-rl;
+    -ms-writing-mode: tb-rl;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg); /* you want */
+}
+
+td.fixed-font {
+    font-family: 'Courier New', Courier, monospace;
+}
+
+table.top-section th,
+table.bottom-section > thead > tr {
+    background-color: #ccc;
+}
+
+table.bottom-section thead th.rotate-ccw {
+    height: 50px;
+}
+
+table.bottom-section tbody td:nth-child(1) {
+    width: 40px;
+    text-align: center;
+}
+
+table.bottom-section tbody td:nth-child(2) {
+    width: 8ch;
+}
+
+table.bottom-section tbody td:nth-child(3) {
+    width: 2ch;
+    text-align: right;
+}
+
+table.bottom-section tbody td:nth-child(4) {
+    width: 3ch;
+    text-align: center;
+}
+
+table.bottom-section tbody td:nth-child(5) {
+    width: 3ch;
+    text-align: right;
+}
+
+table.bottom-section tbody td:nth-child(6) {
+    width: 4ch;
+    text-align: right;
+}
+
+table.bottom-section tbody td:nth-child(7) {
+    width: 3ch;
+    text-align: right;
+}
+
+table.bottom-section tbody td:nth-child(8) {
+    width: 4ch;
+    text-align: right;
+}
+
+table.bottom-section tbody td:nth-child(9) {
+    width: 3ch;
+    text-align: right;
+}
+
+table.bottom-section tbody td:nth-child(10) {
+    width: 3ch;
+    text-align: right;
+}
+
+table.bottom-section tbody td:nth-child(11) {
+    width: 4ch;
+    text-align: right;
+}
+
+table.bottom-section tbody td:nth-child(12) {
+    width: 3ch;
+    text-align: right;
+}
+
+table.bottom-section tbody td:nth-child(13) {
+    width: 3ch;
+    text-align: right;
+}
+
+table.bottom-section tbody td:nth-child(14) {
+    width: 3ch;
+    text-align: right;
+}
+
+table.bottom-section tbody td:nth-child(15) {
+    width: 1ch;
+}
+
+table.bottom-section tbody td:nth-child(16) {
+    width: 1ch;
+}
+
+table.bottom-section tbody td:nth-child(17) {
+    width: 10ch;
+}
+
+table.bottom-section tbody td:nth-child(18) {
+    width: 2ch;
+    border-right: 2px dashed #999;
+}
+
+table.bottom-section tbody td:nth-child(19) {
+    width: 12ch;
+}
+
+table.bottom-section tbody tr:nth-child(1) {
+    border-top: 1.5px solid black;
+}
+
+table.bottom-section tbody tr:nth-child(17) {
+    background-color: #ccc;
+}
+
+table.bottom-section tbody tr:nth-child(17) td:nth-child(2) {
+    background-color: white;
+}
+
+table.bottom-section tbody tr:nth-child(17) td:nth-child(14) {
+    background-color: white;
+}
+
+table.bottom-section tbody tr:nth-child(17) td:nth-child(17) {
+    background-color: white;
+}
+
+table.bottom-section tbody tr:nth-child(17) td:nth-child(18) {
+    background-color: white;
+}
+
+table.bottom-section tbody tr:nth-child(17) td:nth-child(19) {
+    background-color: white;
+}

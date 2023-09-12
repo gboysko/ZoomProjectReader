@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Zoom R-16 Recorder Worksheet</title>
+        <link rel="stylesheet" href="./style.css" type="text/css" />
+    </head>
+    <body>
+        <table class="top-section">
+            <tr>
+                <th>Card</th>
+                <td class="card-name">{{card_name}}</td>
+                <th>Project</th>
+                <td class="proj-num fixed-font">{{project_number}}</td>
+                <td class="proj-name fixed-font">{{project_name}}</td>
+                <td class="proj-name-full">{{project_name_full}}</td>
+                <th>Reverb</th>
+                <td class="fixed-font reverb-num"></td>
+                <td class="fixed-font reverb-name"></td>
+                <th>Chorus</th>
+                <td class="fixed-font chorus-num"></td>
+                <td class="fixed-font chorus-name"></td>
+            </tr>
+        </table>
+        <table class="bottom-section">
+            <thead>
+                <tr>
+                    <th rowspan="3" class="bottom">Bars<br />Used</th>
+                    <th rowspan="3" class="bottom">File Name</th>
+                    <th rowspan="3" class="bottom">
+                        <span class="rotate-ccw">Track #</span>
+                    </th>
+                    <th rowspan="3" class="bottom">
+                        <span class="rotate-ccw">Pan</span>
+                    </th>
+                    <th colspan="7">Equalization</th>
+                    <th rowspan="3" class="bottom">
+                        <span class="rotate-ccw">Reverb Send</span>
+                    </th>
+                    <th rowspan="3" class="bottom">
+                        <span class="rotate-ccw">Chorus Send</span>
+                    </th>
+                    <th rowspan="3" class="bottom">
+                        <span class="rotate-ccw">Fader</span>
+                    </th>
+                    <th rowspan="3" class="bottom">
+                        <span class="rotate-ccw">Stereo Link</span>
+                    </th>
+                    <th rowspan="3" class="bottom">
+                        <span class="rotate-ccw">Invert</span>
+                    </th>
+                    <th colspan="3">Insert Effect</th>
+                </tr>
+                <tr>
+                    <th colspan="2">High</th>
+                    <th colspan="3">Middle</th>
+                    <th colspan="2">Low</th>
+                    <th rowspan="2" class="bottom">Algorithm</th>
+                    <th colspan="2">Patch</th>
+                </tr>
+                <tr>
+                    <th class="bottom"><span class="rotate-ccw">Gain</span></th>
+                    <th class="bottom"><span class="rotate-ccw">Freq</span></th>
+                    <th class="bottom"><span class="rotate-ccw">Gain</span></th>
+                    <th class="bottom"><span class="rotate-ccw">Freq</span></th>
+                    <th class="bottom">
+                        <span class="rotate-ccw">Q Fct</span>
+                    </th>
+                    <th class="bottom"><span class="rotate-ccw">Gain</span></th>
+                    <th class="bottom"><span class="rotate-ccw">Freq</span></th>
+                    <th class="bottom">#</th>
+                    <th class="bottom">Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ti in track_info %}
+                <tr>
+                    <td></td>
+                    <td class="fixed-font">{{ti.track_name}}</td>
+                    <td class="fixed-font">{{ti.track_num}}</td>
+                    <td class="fixed-font">
+                        {{"" if ti.track_name == "" else ti.pan}}
+                    </td>
+                    <td class="fixed-font">
+                        {{"" if ti.track_name == "" or ti.eq_info.hi_band.on_off
+                        == 0 else ti.eq_info.hi_band.gain}}
+                    </td>
+                    <td class="fixed-font">
+                        {{"" if ti.track_name == "" or ti.eq_info.hi_band.on_off
+                        == 0 else ti.eq_info.hi_band.freq}}
+                    </td>
+                    <td class="fixed-font">
+                        {{"" if ti.track_name == "" or
+                        ti.eq_info.mid_band.on_off == 0 else
+                        ti.eq_info.mid_band.gain}}
+                    </td>
+                    <td class="fixed-font">
+                        {{"" if ti.track_name == "" or
+                        ti.eq_info.mid_band.on_off == 0 else
+                        ti.eq_info.mid_band.freq}}
+                    </td>
+                    <td class="fixed-font">
+                        {{"" if ti.track_name == "" or
+                        ti.eq_info.mid_band.on_off == 0 else
+                        ti.eq_info.mid_band.q_factor}}
+                    </td>
+                    <td class="fixed-font">
+                        {{"" if ti.track_name == "" or ti.eq_info.lo_band.on_off
+                        == 0 else ti.eq_info.lo_band.gain}}
+                    </td>
+                    <td class="fixed-font">
+                        {{"" if ti.track_name == "" or ti.eq_info.lo_band.on_off
+                        == 0 else ti.eq_info.lo_band.freq}}
+                    </td>
+                    <td class="fixed-font"></td>
+                    <td class="fixed-font"></td>
+                    <td class="fixed-font">
+                        {{"" if ti.track_name == "" else ti.fader}}
+                    </td>
+                    <td class="fixed-font"></td>
+                    <td class="fixed-font"></td>
+                    <td class="fixed-font"></td>
+                    <td class="fixed-font"></td>
+                    <td class="fixed-font"></td>
+                </tr>
+                {% endfor %}
+                <tr class="master">
+                    <td>Master</td>
+                    <td class="fixed-font"></td>
+                    <td class="fixed-font"></td>
+                    <td class="fixed-font"></td>
+                    <td class="fixed-font"></td>
+                    <td class="fixed-font"></td>
+                    <td class="fixed-font"></td>
+                    <td class="fixed-font"></td>
+                    <td class="fixed-font"></td>
+                    <td class="fixed-font"></td>
+                    <td class="fixed-font"></td>
+                    <td class="fixed-font"></td>
+                    <td class="fixed-font"></td>
+                    <td class="fixed-font"></td>
+                    <td class="fixed-font"></td>
+                    <td class="fixed-font"></td>
+                    <td class="fixed-font"></td>
+                    <td class="fixed-font"></td>
+                    <td class="fixed-font"></td>
+                </tr>
+            </tbody>
+        </table>
+    </body>
+</html>
