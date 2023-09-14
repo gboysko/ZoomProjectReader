@@ -31,9 +31,15 @@ EQ_LENGTH = 16 * EQ_ITEM_SIZE
 UNKNOWN2_OFFSET = EQ_OFFSET + EQ_LENGTH
 UNKNOWN2_ITEM_SIZE = 1
 UNKNOWN2_LENGTH = 8 * UNKNOWN2_ITEM_SIZE
-FILE_NAMES = UNKNOWN2_OFFSET + UNKNOWN2_LENGTH
+FILE_NAMES_OFFSET = UNKNOWN2_OFFSET + UNKNOWN2_LENGTH
 FILE_NAMES_ITEM_SIZE = 16
 FILE_NAMES_LENGTH = 17 * FILE_NAMES_ITEM_SIZE
+UNKNOWN3_OFFSET = FILE_NAMES_OFFSET + FILE_NAMES_LENGTH
+UNKNOWN3_LENGTH = 4
+CHORUS_SEND_ON_OFF_OFFSET = UNKNOWN3_OFFSET + UNKNOWN3_LENGTH
+CHORUS_SEND_ON_OFF_LENGTH = 4
+REVERB_SEND_ON_OFF_OFFSET = CHORUS_SEND_ON_OFF_OFFSET + CHORUS_SEND_ON_OFF_LENGTH
+REVERB_SEND_ON_OFF_LENGTH = 4
 
 # Enumerations
 HIGH_FREQS = Enum('HIGH_FREQS', ['500', '630', '800', '1.0k', '1.3k', '1.6k', '2.0k', '2.5k', '3.2k', '4k', '5k', '6.3k', '8k', '10k', '12.5k', '16k', '18k'], start=0)
@@ -97,6 +103,14 @@ def get_q_factor_str(band, int_value):
     else:
         return ''
 
+# Get the value of a bit set in a mask
+def get_bitmask_value(binary_data, address, bit_pos):
+    # Get the value for all 16 tracks
+    bitmask = convert_binary_to_int(binary_data[address:address+4])
+
+    # Get the bit
+    return bitmask & (1 << bit_pos)
+
 # Define a Band of EQ settings for a Track
 class EQBandInfo(JsonSerializable):
     # Constructor
@@ -146,10 +160,10 @@ class EQInfo(JsonSerializable):
     @classmethod
     def extract_eq_info(cls, project_file, track_num):
         # Get the address of the EQ info
-        eq_address = get_binary_address(EQ_OFFSET, track_num-1, EQ_ITEM_SIZE)
+        eq_addr = get_binary_address(EQ_OFFSET, track_num-1, EQ_ITEM_SIZE)
 
         # Extract out the fields...
-        eq_fields = unpack('iiiiiiiiiiii', project_file._data[eq_address:eq_address+EQ_ITEM_SIZE])
+        eq_fields = unpack('iiiiiiiiiiii', project_file._data[eq_addr:eq_addr+EQ_ITEM_SIZE])
 
         # Construct each of the individual fields
         hi_band_values = eq_fields[0:4]
@@ -161,13 +175,17 @@ class EQInfo(JsonSerializable):
 # Define information for a single Track/File
 class TrackInfo(JsonSerializable):
     # Constructor
-    def __init__(self, track_num: int, file_name: str, pan: str, eq_info: EQInfo, fader: int):
+    def __init__(self, track_num: int, file_name: str, pan: str, eq_info: EQInfo, fader: int, reverb_send: int, reverb_send_on_off: bool, chorus_send: int, chorus_send_on_off: bool):
         self.track_num = track_num
         self.file_name = file_name
         self.track_name = file_name[0:8]
         self.pan = pan
         self.eq_info = eq_info
         self.fader = fader
+        self.reverb_send = reverb_send
+        self.reverb_send_on_off = reverb_send_on_off
+        self.chorus_send = chorus_send
+        self.chorus_send_on_off = chorus_send_on_off
 
     # How to display the file as a string
     def __str__(self):
@@ -176,7 +194,7 @@ class TrackInfo(JsonSerializable):
             return ""
 
         # Otherwise, construct
-        return Template('Track #$track_num: file_name=$file_name, track_name=$track_name, pan=$pan, eq_info=$eq_info, fader=$fader').substitute(self.__dict__)
+        return Template('Track #$track_num: file_name=$file_name, track_name=$track_name, pan=$pan, eq_info=$eq_info, fader=$fader, reverb_send=$reverb_send (On=$reverb_send_on_off), chorus_send=$chorus_send (On=$chorus_send_on_off)').substitute(self.__dict__)
 
     # Whether a track is "used" or not
     def is_used(self):
@@ -186,28 +204,46 @@ class TrackInfo(JsonSerializable):
     @classmethod
     def extract_track_info(cls, project_file, track_num):
         # Get the address of the file name
-        file_name_address = get_binary_address(FILE_NAMES, track_num-1, FILE_NAMES_ITEM_SIZE)
+        file_name_addr = get_binary_address(FILE_NAMES_OFFSET, track_num-1, FILE_NAMES_ITEM_SIZE)
 
         # Find the file name associated with the track
-        file_name = convert_binary_to_ascii(project_file._data[file_name_address:file_name_address+12]) # Was: file_name_address+FILE_NAMES_ITEM_SIZE
+        file_name = convert_binary_to_ascii(project_file._data[file_name_addr:file_name_addr+12]) # Was: file_name_addr+FILE_NAMES_ITEM_SIZE
 
         # Get the address of the pan value
-        pan_address = get_binary_address(PAN_OFFSET, track_num-1, PAN_ITEM_SIZE)
+        pan_addr = get_binary_address(PAN_OFFSET, track_num-1, PAN_ITEM_SIZE)
 
         # Find the pan value...
-        pan_value = convert_binary_to_int(project_file._data[pan_address:pan_address+PAN_ITEM_SIZE])
+        pan_value = convert_binary_to_int(project_file._data[pan_addr:pan_addr+PAN_ITEM_SIZE])
         pan_str = get_pan_str(pan_value)
 
         # Create an EQ Info section
         eq_info = EQInfo.extract_eq_info(project_file, track_num)
 
         # Get the fader address
-        fader_address = get_binary_address(FADER_OFFSET, track_num-1, FADER_ITEM_SIZE)
+        fader_addr = get_binary_address(FADER_OFFSET, track_num-1, FADER_ITEM_SIZE)
 
         # Get the fader value
-        fader = convert_binary_to_int(project_file._data[fader_address:fader_address+FADER_ITEM_SIZE])
+        fader = convert_binary_to_int(project_file._data[fader_addr:fader_addr+FADER_ITEM_SIZE])
 
-        return TrackInfo(track_num, file_name, pan_str, eq_info, fader)
+        # Get the reverb send value address
+        reverb_send_addr = get_binary_address(REVERB_SEND_OFFSET, track_num-1, REVERB_SEND_ITEM_SIZE)
+
+        # Get the actual value of reverb send (regardless of whether it is ON/OFF)
+        reverb_send_value = convert_binary_to_int(project_file._data[reverb_send_addr:reverb_send_addr+REVERB_SEND_ITEM_SIZE])
+
+        # Get the bitmask value for this track
+        reverb_send_on_off = get_bitmask_value(project_file._data, REVERB_SEND_ON_OFF_OFFSET, track_num-1)
+
+        # Get the chorus send value address
+        chorus_send_addr = get_binary_address(CHORUS_SEND_OFFSET, track_num-1, CHORUS_SEND_ITEM_SIZE)
+
+        # Get the actual value of chorus send (regardless of whether it is ON/OFF)
+        chorus_send_value = convert_binary_to_int(project_file._data[chorus_send_addr:chorus_send_addr+CHORUS_SEND_ITEM_SIZE])
+
+        # Get the bitmask value for this track
+        chorus_send_on_off = get_bitmask_value(project_file._data, CHORUS_SEND_ON_OFF_OFFSET, track_num-1)
+
+        return TrackInfo(track_num, file_name, pan_str, eq_info, fader, reverb_send_value, reverb_send_on_off, chorus_send_value, chorus_send_on_off)
 
 # Define our Project File class
 class ProjectFile(JsonSerializable):

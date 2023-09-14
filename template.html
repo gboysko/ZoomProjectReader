@@ -111,8 +111,8 @@
                         {{"" if ti.track_name == "" or ti.eq_info.lo_band.on_off
                         == 0 else ti.eq_info.lo_band.freq}}
                     </td>
-                    <td class="fixed-font"></td>
-                    <td class="fixed-font"></td>
+                    <td class="fixed-font">{{"" if ti.track_name == "" or not ti.reverb_send_on_off else ti.reverb_send}}</td>
+                    <td class="fixed-font">{{"" if ti.track_name == "" or not ti.chorus_send_on_off else ti.chorus_send}}</td>
                     <td class="fixed-font">
                         {{"" if ti.track_name == "" else ti.fader}}
                     </td>

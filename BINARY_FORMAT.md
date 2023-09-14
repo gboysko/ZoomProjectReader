@@ -34,13 +34,15 @@ NULLs
 
 ### Bytes: 0x0058-005F (8 bytes)
 
-`18 00 00 00 00 00 00 00`
+F&F Hex: `18 00 00 00 00 00 00 00`
 
 ## Fader Section: 0x0060-009F (64 bytes)
 
 Each 4 byte value is the numeric representation of the FADER, starting at Track #1, going to Track #16.
 
 Each value is equivalent to the decimal value shown in the UI.
+
+Default value seems to be 100 (0x64).
 
 ## Pan Section: 0x00A0-00DF (64 bytes)
 
@@ -53,23 +55,23 @@ A value of 56 (0x38) is equivalent to "R12".
 
 To compute value: PAN === 'C' ? 50 : (PAN LEFT ? 50 - (pV/2) : 50 + (pV/2))
 
+Default value seems to be 50 (0x32).
+
 ## Chorus Send Section: 00E0-011F (64 bytes)
 
 Each 4 byte value is the numeric representation of the CHORUS SEND value, starting at Track #1, going to Track #16.
 
-The value does _NOT_ indicate whether the CHORUS SEND is On or Off, but just the numeric value, if it was turned on.
-
-If we were going to store just whether the CHORUS SEND is On or Off, _for all 16 tracks_, we would need to store a simple 16 bit value.
+The value does _NOT_ indicate whether the CHORUS SEND is On or Off, but just the numeric value, if it was turned on. That is stored at 0x05BC.
 
 ## Reverb Send Section: 0x120-015F (64 bytes)
 
 Each 4 byte value is the numeric representation of the REVERB SEND value, starting at Track #1, going to Track #16.
 
-The value does _NOT_ indicate whether the REVERB SEND is On or Off, but just the numeric value, if it was turned on.
+The value does _NOT_ indicate whether the REVERB SEND is On or Off, but just the numeric value, if it was turned on. That is stored at 0x05C0.
 
 ## Unknown Section: 0x0160-019F (64 bytes)
 
-For this project, all of the values are 0. Could be INSERT EFFECT values?
+For this project, all of the values are 0. This seems to be the INVERT setting, organized a single byte values from Track 1 to 16?
 
 ## EQ Section: 0x01A0-049F (768 bytes)
 
@@ -147,19 +149,32 @@ These seem to be default values with the following possible assignments:
 
 There are 17 sets of 16 bytes of file names. Though the file names are restricted to being 12 chars (8 for the name, 1 for "." and 3 for the suffix), the extra bytes are NULLs. They are ordered from Track 1-16, followed by the name of the MASTERING file.
 
-## Unknown Section: 0x05B8-0x05BF (8 bytes)
+## Unknown Section: 0x05B8-0x05BB (4 bytes)
 
 NULLs
 
-## Unknown Section: 0x05C0-09AF (1008 bytes)
+## Chorus Send On/Off Section: 0x05BC-0x05BF (4 bytes)
 
-Hex: `E1 C4 ... (1002 NULLs) 98 3A 00 00`
+Seems that the default is `FF FF 00 00` for these four bytes (with the first 16 bits indicating that Chorus Send is ON, by default for all Tracks).
 
-This seems to be where OFF and ON settings are stored.
+The first byte is for Tracks 8 down to 1. The second byte is for Tracks 16 down to 9.
+
+## Reverb Send On/Off Section: 0x05C0-09C3 (4 bytes)
+
+Seems that the default is `FF FF 00 00`, similar to Chorus Send.
 
 For F&F, `E1 C4` is a 16-bit value where the following bits are SET: 15, 14, 13, 8, 7, 6, and 2.
 
-This has 9 bits "turned off".
+It seems like the way to interpret it is `E1` is the settings for Tracks 8 down to 1. This has bits set for Tracks 1, 6, 7, and 8. `C4` is the settings for Tracks 16 down to 9. This has bits set for Tracks 11, 15 and 16.
+
+## Unknown Section: 0x05C4-09AB (1000 bytes)
+
+NULLs
+
+## Unknown Section: 0x09AC-0x09AF (4 bytes)
+
+F&F Hex: `98 3A 00 00`
+WinterSpells Hex: `93 81 00 00`
 
 ## Unknown Section: 0x09B0-0x0A23 (116 bytes? Or 120?)
 
