@@ -10,11 +10,12 @@
 * [ ] How Invert is represented.
 * [ ] How Stereo Link is represented.
 
-## Outside of ZDT File
+## Outside of PRJDATA.ZDT File
 
 * [ ] Parse entire Project directory to get project number.
 * [ ] Parse entire Project directory to get list of all AUDIO files. Use it to find *EXTRA* files not assigned to tracks.
 * [ ] Load all "bars_used" settings for each track.
+* [ ] May need to parse the `EFXDATA.ZDT` file for INSERT EFFECT values.
 
 ## Within the TEMPLATE HTML File
 

@@ -6,7 +6,7 @@ Typically stored in `PRJDATA.ZDT`
 
 ### Bytes: 0x0000-001E (31 bytes)
 
-Seems to be the string `ZOOM R-16  PROJECT DATA VER0001`
+Seems to be the string `ZOOM R-16  PROJECT DATA VER0001`.
 
 ### Bytes: 0x001E-001F (1 byte)
 
@@ -35,6 +35,41 @@ NULLs
 ### Bytes: 0x0058-005F (8 bytes)
 
 F&F Hex: `18 00 00 00 00 00 00 00`
+
+This seems to be related to INSERT EFFECT.
+
+When I turned it on for a project, the byte at 0x0058 changed from `0` to `08`. Maybe this is simply an On/Off bit that is set.
+
+UPDATE: When I changed from `TR1` as INPUT SOURCE to `IN5`, this value changed from `08` to `04`.
+
+Current values:
+
+| Hex Value:    | 0    | 4     | 8     | 0x18     |
+| ------------- | ---- | ----- | ----- | -------- |
+| INPUT SOURCE: | N/A? | `IN5` | `TR1` | `MASTER` |
+
+Possible full range of values
+
+| Hex Value:    | 0     | 1     | 2     | 3     | 4     | 5     | 6     | 7     |
+| ------------- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
+| INPUT SOURCE: | `IN1` | `IN2` | `IN3` | `IN4` | `IN5` | `IN6` | `IN7` | `IN8` |
+
+| Hex Value:    | 8     | 9     | A     | B     | C     | D     | E     | F     |
+| ------------- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
+| INPUT SOURCE: | `TR1` | `TR2` | `TR3` | `TR4` | `TR5` | `TR6` | `TR7` | `TR8` |
+
+| Hex Value:    | 10    | 11     | 12     | 13     | 14     | 15     | 16     | 17     |
+| ------------- | ----- | ------ | ------ | ------ | ------ | ------ | ------ | ------ |
+| INPUT SOURCE: | `TR9` | `TR10` | `TR11` | `TR12` | `TR13` | `TR14` | `TR15` | `TR16` |
+
+| Hex Value:    | 18       |
+| ------------- | -------- |
+| INPUT SOURCE: | `MASTER` |
+
+Questions:
+* How to specify Track1 OR Track 2 (for mono tracks on DUAL effect)?
+* How to specify Track1 AND Track 2 (for stereo tracks)
+* How to specify Track 1-8 (or Track 9-16) for `8xCompEQ` effects?
 
 ## Fader Section: 0x0060-009F (64 bytes)
 
@@ -69,7 +104,7 @@ Each 4 byte value is the numeric representation of the REVERB SEND value, starti
 
 The value does _NOT_ indicate whether the REVERB SEND is On or Off, but just the numeric value, if it was turned on. That is stored at 0x05C0.
 
-## Unknown Section: 0x0160-019F (64 bytes)
+## Unknown Section ("UNKNOWN1"): 0x0160-019F (64 bytes)
 
 For this project, all of the values are 0. This seems to be the INVERT setting, organized a single byte values from Track 1 to 16?
 
@@ -144,6 +179,17 @@ These seem to be default values with the following possible assignments:
 | EQ Lo Freq Settings: | 500 | 630 | 800 | 1.0k | 1.3k | 1.6k |
 | -------------------- | --- | --- | --- | ---- | ---- | ---- |
 | Hex Values:          | B   | C   | D   | E    | F    | 10   |
+
+## Unknown Section ("UNKNOWN2"): 0x04A0-0x04A7 (8 bytes)
+
+Seems to be related to INSERT EFFECT. There are two parts to the effect: ALGORITHM and PATCH (number and name). Though it appears that the PATCH number (and name) seems to be stored in the `EFXDATA.ZDT` file. This leaves only ALGORITHM.
+
+For the `BlankCopyPlusTrackWithInsertEffect.zdt`, I selected the ALGORITHM to be `MIC` (and the PATCH to be `1`, `RoomAmbi`).
+
+The default value of address 0x04A5 seems to be 0x64 (100). For other projects, this is different:
+
+-   It is `0x43` (67) for `BlankCopyPlusTrackWithInsertEffect`. Maybe this is `MIC`?
+-   It is `0x35` (53) for `FieldsAndForests`. Maybe this is `MASTERING`?
 
 ## Track Names Section: 0x04A8-0x05B7 (272 bytes)
 

@@ -282,7 +282,6 @@ class ProjectFile(JsonSerializable):
         # Return an instance of ourself
         return ProjectFile(contents)
 
-
 if __name__ == '__main__':
     # Look for command line argument of file name...
     if len(sys.argv[1:]) < 3:
