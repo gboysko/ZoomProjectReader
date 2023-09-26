@@ -257,15 +257,42 @@ class ProjectFile(JsonSerializable):
         for i in range(16):
             self.track_info.append(TrackInfo.extract_track_info(self, i+1))
 
+    # Try to find a track by a field name and value
+    def find_track(self, field_name, field_value):
+        # Loop through the track numbers
+        for i in range(16):
+            # Is this field the track number and does it match?
+            if field_name == "track_num" and field_value == i:
+                return(self.track_info[i])
+
+            # Is this field the track name and does it match?
+            if field_name == "track_name" and field_value == self.track_info[i].track_name:
+                return self.track_info[i]
+
     # Import extra info
     def import_extra_info(self, obj):
-        # Do we have an card name?
+        # Do we have a card name?
         if obj["card_name"]:
             self.card_name = obj["card_name"]
 
-        # Do we have project full name?
+        # Do we have a project full name?
         if obj["project_name_full"]:
             self.project_name_full = obj["project_name_full"]
+
+        # Do we have a project number?
+        if obj["project_number"]:
+            self.project_number = str(obj["project_number"]).zfill(3)
+
+        # Do we have a tracks section?
+        if obj["tracks"]:
+            # Loop through each track object and try to associate bars_used
+            for track_name in obj["tracks"]:
+                # Try to find the track by its name...
+                track = self.find_track("track_name", track_name)
+
+                # If we have a matching, track, add extra info...
+                if track:
+                    track.bars_used = obj["tracks"][track_name]["bars_used"]
 
     # Class level method to return a Project from a file
     @classmethod

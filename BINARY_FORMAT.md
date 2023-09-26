@@ -1,14 +1,98 @@
+# Zoom Effects Binary File Format
+
+Stored in `EFXDATA.ZDT`
+
+
+### Bytes: 0x0000-001D (30 bytes)
+
+The string `ZOOM R-16  EFFECT DATA VER0001`.
+
+### Bytes: 0x001E-001F (2 bytes)
+
+Space
+
+### Bytes: 0x0020-002E (15 bytes)
+
+Spaces
+
+### Bytes: 0x002F-0057 (41 bytes)
+
+NULLs
+
+### Send Effects Section: 0x058-005F (8 bytes)
+
+Blank: `0 0 0 0 0 0 0 0` (which defaults to SEND REVERB of 0 and SEND CHORUS/DELAY of 0)
+
+BlankWithSendReturnChanged: `0F 0 0 0 07 0 0 0` (which has SEND REVERB of 7 and SEND CHORUS/DELAY of 15/0xF)
+
+### Unknown Section: 0x0060-0097 (56 bytes)
+
+Common: `1 0`
+
+Blank: `0 0` (Send Reverb ON)
+BlankMinusSendChorus: `01 0` (SendChorus OFF)
+BlankMinusSendReverb: `02 0` (SendReverb OFF)
+
+Common: `0 1 0 08 27 [7x] 0`
+
+Common: `11 08 27 [5x] 0 2 12 0E 0 4F [3x] 0`
+Common: `[2x] 0 0B 0E 0C 27 [6x] 0 7 0 1 0`
+Common: `[6x] 0 18 0B`
+
+### Unknown Section: 0x0098-00C7 (48 bytes)
+
+NULLs
+
+### Unknown Section: 0x00C8-00CF (8 bytes)
+
+Blank: The letters "Standard" which seems to be the default patch for INSERT EFFECT (Algorithm is `CLEAN`, Patch Number is `0`)
+
+### Unknown Section: 0x00D0-00DF (16 bytes)
+
+Common: `1C 0 0 0 1 0` (then)
+
+Blank: `81 0`
+BlankWithSendReturnChanged: `DA 07` (perhaps part of a change of SEND REVERB from 0 to 7?)
+
+Common: `[6x] 0`
+
+Blank: `0F`
+BlankWithSendReturnChanged: `32`
+
+Common: `0`
+
+### Send Chorus Settings: 0x00E0-00EF (16 bytes)
+
+Blank: `05 0 0A 0 10 0 0F 0`
+Blank: The letters "ShortDLY"
+BlankWithSendReturnChanged: `0A 0 0A 0 32 0 0 0`
+BlankWithSendReturnChanged: The letters "Whole   "
+
+### Unknown Section: 0x00F0-00FF (16 bytes)
+
+Common: `01 0`
+
+Blank:                      `0 0 02 0 0B 0 11 0 0B 0 0  0 13 0`
+BlankWithSendReturnChanged: `1 0 0A 0 0D 0 06 0 0F 0 0A 0 1E 0`
+
+### Send Reverb Settings: 0x0100-010F (16 bytes)
+
+Common: `[6x] 0`
+Blank: The letters "TightHal"
+BlankWithSendReturnChanged: "DarkRoom"
+Common: `01 0`
+
 # Zoom Project Binary File Format
 
-Typically stored in `PRJDATA.ZDT`
+Stored in `PRJDATA.ZDT`
 
 ## Header Section: 0x0000-005F (96 bytes)
 
 ### Bytes: 0x0000-001E (31 bytes)
 
-Seems to be the string `ZOOM R-16  PROJECT DATA VER0001`.
+The string `ZOOM R-16  PROJECT DATA VER0001`.
 
-### Bytes: 0x001E-001F (1 byte)
+### Bytes: 0x001F-001F (1 byte)
 
 Space
 

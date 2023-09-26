@@ -14,11 +14,11 @@
                 <td class="proj-name fixed-font">{{project_name}}</td>
                 <td class="proj-name-full">{{project_name_full}}</td>
                 <th>Reverb</th>
-                <td class="fixed-font reverb-num"></td>
-                <td class="fixed-font reverb-name"></td>
+                <td class="fixed-font reverb-num">{{reverb_number}}</td>
+                <td class="fixed-font reverb-name">{{reverb_name}}</td>
                 <th>Chorus</th>
-                <td class="fixed-font chorus-num"></td>
-                <td class="fixed-font chorus-name"></td>
+                <td class="fixed-font chorus-num">{{chorus_number}}</td>
+                <td class="fixed-font chorus-name">{{chorus_name}}</td>
             </tr>
         </table>
         <table class="bottom-section">
@@ -74,7 +74,7 @@
             <tbody>
                 {% for ti in track_info %}
                 <tr>
-                    <td></td>
+                    <td>{{ti.bars_used}}</td>
                     <td class="fixed-font">{{ti.track_name}}</td>
                     <td class="fixed-font">{{ti.track_num}}</td>
                     <td class="fixed-font">
