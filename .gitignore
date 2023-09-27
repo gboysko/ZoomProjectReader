@@ -1,7 +1,9 @@
 *.zdt
 *.json
+!*_extra.json
 *.htm
 bin/
 lib/
 lib64
 pyvenv.cfg
+__pycache__/

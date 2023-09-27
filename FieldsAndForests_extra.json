@@ -1,0 +1,71 @@
+{
+	"card_name": "Transcend",
+	"project_name_full": "Dahlias",
+	"tracks": {
+		"LAST_VOC": {
+			"bars_used": "48-91",
+			"track_num": 1
+		},
+		"VERSE1__": {
+			"bars_used": "9-91",
+			"track_num": 2
+		},
+		"VERSE2__": {
+			"bars_used": "9-91",
+			"track_num": 3
+		},
+		"OOH_OW_T": {
+			"bars_used": "67-91",
+			"track_num": 4
+		},
+		"OOH_OW_J": {
+			"bars_used": "67-91",
+			"track_num": 5
+		},
+		"FNF_1___": {
+			"bars_used": "75-91",
+			"track_num": 6
+		},
+		"FNF_2___": {
+			"bars_used": "75-91",
+			"track_num": 7
+		},
+		"FNF_UP__": {
+			"bars_used": "83-86",
+			"track_num": 8
+		},
+		"LEAD_GTR": {
+			"bars_used": "ALL",
+			"track_num": 9
+		},
+		"RHYTM_DI": {
+			"bars_used": "ALL",
+			"track_num": 10
+		},
+		"RHYTH_CL": {
+			"bars_used": "ALL",
+			"track_num": 11
+		},
+		"BASS____": {
+			"bars_used": "ALL",
+			"track_num": 12
+		},
+		"KIT2____": {
+			"bars_used": "ALL",
+			"track_num": 13
+		},
+
+		"FNF_GRP_": {
+			"bars_used": "75-91",
+			"track_num": 14
+		},
+		"YELL_1__": {
+			"bars_used": "91-104",
+			"track_num": 15
+		},
+		"YELL_2__": {
+			"bars_used": "91-104",
+			"track_num": 16
+		}
+	}
+}

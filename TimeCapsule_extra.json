@@ -1,0 +1,42 @@
+{
+	"card_name": "Transcend",
+	"project_name_full": "Time Capsule",
+	"tracks": {
+		"GTR_LEAD": {
+			"bars_used": "52-70",
+			"track_num": 1
+		},
+		"GTR_RHYM": {
+			"bars_used": "2-70",
+			"track_num": 2
+		},
+		"VOC_VRS1": {
+			"bars_used": "5-63",
+			"track_num": 3
+		},
+		"VOC_VRS2": {
+			"bars_used": "5-63",
+			"track_num": 4
+		},
+		"BASS____": {
+			"bars_used": "18-70",
+			"track_num": 5
+		},
+		"VOC_JON1": {
+			"bars_used": "9-63",
+			"track_num": 6
+		},
+		"VOC_JON2": {
+			"bars_used": "9-63",
+			"track_num": 7
+		},
+		"VOC_FALS": {
+			"bars_used": "56-63",
+			"track_num": 8
+		},
+		"DR_KIT__": {
+			"bars_used": "1-70",
+			"track_num": 10
+		}
+	}
+}

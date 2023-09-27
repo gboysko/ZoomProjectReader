@@ -1,0 +1,70 @@
+{
+    "card_name": "Transcend",
+    "project_name_full": "Winter Spell",
+    "tracks": {
+        "VERSE1__": {
+            "bars_used": "18-166",
+            "track_num": 1
+        },
+        "VERSE2__": {
+            "bars_used": "18-166",
+            "track_num": 2
+        },
+        "VOC_OUT1": {
+            "bars_used": "115-154",
+            "track_num": 3
+        },
+        "VOC_OUT2": {
+            "bars_used": "18-154",
+            "track_num": 4
+        },
+        "VOC_OUT3": {
+            "bars_used": "123-154",
+            "track_num": 5
+        },
+        "VOC_OUT4": {
+            "bars_used": "139-154",
+            "track_num": 6
+        },
+        "GTR_LD_T": {
+            "bars_used": "???",
+            "track_num": 7
+        },
+        "GTR_LD_J": {
+            "bars_used": "???",
+            "track_num": 8
+        },
+        "GTR_VRS_": {
+            "bars_used": "2-114",
+            "track_num": 9
+        },
+        "GTR_OUT_": {
+            "bars_used": "115-166",
+            "track_num": 10
+        },
+        "BASS____": {
+            "bars_used": "ALL",
+            "track_num": 11
+        },
+        "TRIANGLE": {
+            "bars_used": "58-66",
+            "track_num": 12
+        },
+        "TUBULAR_": {
+            "bars_used": "155-162",
+            "track_num": 13
+        },
+        "KIT1__V2": {
+            "bars_used": "ALL",
+            "track_num": 14
+        },
+        "KIT2____": {
+            "bars_used": "115-154",
+            "track_num": 15
+        },
+        "DRM_ORCH": {
+            "bars_used": "115-154",
+            "track_num": 16
+        }
+    }
+}

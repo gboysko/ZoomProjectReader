@@ -146,5 +146,10 @@
                 </tr>
             </tbody>
         </table>
+        {% if extra_audio_files|length > 0 %}
+        <div class="extra-files">
+            Extra audio files: <code>{{ extra_audio_files|join(", ") }}</code>
+        </div>
+        {% endif %}
     </body>
 </html>

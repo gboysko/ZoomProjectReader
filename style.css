@@ -82,7 +82,8 @@ table.bottom-section thead th.rotate-ccw {
 }
 
 table.bottom-section tbody td:nth-child(1) {
-    width: 40px;
+    width: 50px;
+    font-size: 0.85em;
     text-align: center;
 }
 
@@ -197,4 +198,8 @@ table.bottom-section tbody tr:nth-child(17) td:nth-child(18) {
 
 table.bottom-section tbody tr:nth-child(17) td:nth-child(19) {
     background-color: white;
+}
+
+div.extra-files {
+    margin-top: 0.5em;
 }
