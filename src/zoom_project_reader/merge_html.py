@@ -6,7 +6,7 @@ from util import status
 
 # Our Jinja2 Environment
 env = Environment(
-    loader=FileSystemLoader("."),
+    loader=FileSystemLoader("templates"),
     autoescape=select_autoescape()
 )
 
