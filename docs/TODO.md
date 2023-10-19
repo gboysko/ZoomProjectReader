@@ -26,3 +26,4 @@
 * [ ] Values for MASTER need to have field names
 * [x] How to show unassigned files?
 * [ ] Should we show values for all columns? Can we find more space?
+* [ ] Add some place to show the current date? Maybe an optional note from the caller?
