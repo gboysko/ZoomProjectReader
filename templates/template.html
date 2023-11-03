@@ -117,7 +117,7 @@
                         {{"" if ti.track_name == "" else ti.fader}}
                     </td>
                     <td class="fixed-font"></td>
-                    <td class="fixed-font"></td>
+                    <td class="fixed-font">{{"" if ti.track_name == "" else "On" if ti.invert_on else "" }}</td>
                     <td class="fixed-font"></td>
                     <td class="fixed-font"></td>
                     <td class="fixed-font"></td>
@@ -125,6 +125,7 @@
                 {% endfor %}
                 <tr class="master">
                     <td>Master</td>
+                    <td class="fixed-font">{{master.name}}</td>
                     <td class="fixed-font"></td>
                     <td class="fixed-font"></td>
                     <td class="fixed-font"></td>
@@ -136,8 +137,7 @@
                     <td class="fixed-font"></td>
                     <td class="fixed-font"></td>
                     <td class="fixed-font"></td>
-                    <td class="fixed-font"></td>
-                    <td class="fixed-font"></td>
+                    <td class="fixed-font">{{"" if master.name == "" else master.fader}}</td>
                     <td class="fixed-font"></td>
                     <td class="fixed-font"></td>
                     <td class="fixed-font"></td>
