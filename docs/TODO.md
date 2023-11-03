@@ -2,10 +2,12 @@
 
 ## Within PRJDATA.ZDT File
 
-* [ ] Display the MASTER audio file.
-* [ ] The FADER level for the MASTER track.
-* [ ] How Invert is represented.
-* [ ] How Stereo Link is represented.
+* [x] Display the MASTER audio file.
+* [x] The FADER level for the MASTER track.
+* [x] How Invert is represented.
+* [x] How Stereo Link is represented.
+* [ ] Restructure fields that end with "_on_off" to be just "_on" and ensure that these hold Boolean values.
+* [ ] Protected, bitlength?
 
 ## Within EFXDATA.ZDT File
 
@@ -23,7 +25,8 @@
 
 ## Within the TEMPLATE HTML File
 
-* [ ] Values for MASTER need to have field names
+* [x] Values for MASTER need to have field names
 * [x] How to show unassigned files?
-* [ ] Should we show values for all columns? Can we find more space?
+* [ ] Should we show values for all columns (as a legend, of sorts)? Can we find more space?
 * [ ] Add some place to show the current date? Maybe an optional note from the caller?
+* [ ] How to display stereo tracks
