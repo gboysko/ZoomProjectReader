@@ -2,7 +2,7 @@
 <html>
     <head>
         <title>Zoom R-16 Recorder Worksheet</title>
-        <link rel="stylesheet" href="./static/style.css" type="text/css">
+        <link rel="stylesheet" href="./static/style.css" type="text/css" />
     </head>
     <body>
         <table class="top-section">
@@ -81,43 +81,56 @@
                         {{"" if ti.track_name == "" else ti.pan}}
                     </td>
                     <td class="fixed-font">
-                        {{"" if ti.track_name == "" or ti.eq_info.hi_band.on_off
-                        == 0 else ti.eq_info.hi_band.gain}}
+                        {{"" if ti.track_name == "" or not
+                        ti.eq_info.hi_band.on_off or ti.eq_info.hi_band.gain ==
+                        "0" else ti.eq_info.hi_band.gain}}
                     </td>
                     <td class="fixed-font">
-                        {{"" if ti.track_name == "" or ti.eq_info.hi_band.on_off
-                        == 0 else ti.eq_info.hi_band.freq}}
+                        {{"" if ti.track_name == "" or not
+                        ti.eq_info.hi_band.on_off or ti.eq_info.hi_band.gain ==
+                        "0" else ti.eq_info.hi_band.freq}}
                     </td>
                     <td class="fixed-font">
-                        {{"" if ti.track_name == "" or
-                        ti.eq_info.mid_band.on_off == 0 else
-                        ti.eq_info.mid_band.gain}}
+                        {{"" if ti.track_name == "" or not
+                        ti.eq_info.mid_band.on_off or ti.eq_info.mid_band.gain
+                        == "0" else ti.eq_info.mid_band.gain}}
                     </td>
                     <td class="fixed-font">
-                        {{"" if ti.track_name == "" or
-                        ti.eq_info.mid_band.on_off == 0 else
-                        ti.eq_info.mid_band.freq}}
+                        {{"" if ti.track_name == "" or not
+                        ti.eq_info.mid_band.on_off or ti.eq_info.mid_band.gain
+                        == "0" else ti.eq_info.mid_band.freq}}
                     </td>
                     <td class="fixed-font">
-                        {{"" if ti.track_name == "" or
-                        ti.eq_info.mid_band.on_off == 0 else
-                        ti.eq_info.mid_band.q_factor}}
+                        {{"" if ti.track_name == "" or not
+                        ti.eq_info.mid_band.on_off or ti.eq_info.mid_band.gain
+                        == "0" else ti.eq_info.mid_band.q_factor}}
                     </td>
                     <td class="fixed-font">
-                        {{"" if ti.track_name == "" or ti.eq_info.lo_band.on_off
-                        == 0 else ti.eq_info.lo_band.gain}}
+                        {{"" if ti.track_name == "" or not
+                        ti.eq_info.lo_band.on_off or ti.eq_info.lo_band.gain ==
+                        "0" else ti.eq_info.lo_band.gain}}
                     </td>
                     <td class="fixed-font">
-                        {{"" if ti.track_name == "" or ti.eq_info.lo_band.on_off
-                        == 0 else ti.eq_info.lo_band.freq}}
+                        {{"" if ti.track_name == "" or not
+                        ti.eq_info.lo_band.on_off or ti.eq_info.lo_band.gain ==
+                        "0" else ti.eq_info.lo_band.freq}}
                     </td>
-                    <td class="fixed-font">{{"" if ti.track_name == "" or not ti.reverb_send_on_off else ti.reverb_send}}</td>
-                    <td class="fixed-font">{{"" if ti.track_name == "" or not ti.chorus_send_on_off else ti.chorus_send}}</td>
+                    <td class="fixed-font">
+                        {{"" if ti.track_name == "" or not ti.reverb_send_on_off
+                        or ti.reverb_send == 0 else ti.reverb_send}}
+                    </td>
+                    <td class="fixed-font">
+                        {{"" if ti.track_name == "" or not ti.chorus_send_on_off
+                        or ti.chorus_send == 0 else ti.chorus_send}}
+                    </td>
                     <td class="fixed-font">
                         {{"" if ti.track_name == "" else ti.fader}}
                     </td>
                     <td class="fixed-font"></td>
-                    <td class="fixed-font">{{"" if ti.track_name == "" else "On" if ti.invert_on else "" }}</td>
+                    <td class="fixed-font">
+                        {{"" if ti.track_name == "" else "On" if ti.invert_on
+                        else "" }}
+                    </td>
                     <td class="fixed-font"></td>
                     <td class="fixed-font"></td>
                     <td class="fixed-font"></td>
@@ -137,7 +150,9 @@
                     <td class="fixed-font"></td>
                     <td class="fixed-font"></td>
                     <td class="fixed-font"></td>
-                    <td class="fixed-font">{{"" if master.name == "" else master.fader}}</td>
+                    <td class="fixed-font">
+                        {{"" if master.name == "" else master.fader}}
+                    </td>
                     <td class="fixed-font"></td>
                     <td class="fixed-font"></td>
                     <td class="fixed-font"></td>

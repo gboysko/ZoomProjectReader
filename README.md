@@ -13,6 +13,8 @@ Right now, the results can be used to produce an HTML file that looks like the f
 To install the necessary packages, use:
 
 ```
+$ python3 -m venv .
+$ . ./bin/activate
 $ pip3 install -r requirements.txt
 ```
 

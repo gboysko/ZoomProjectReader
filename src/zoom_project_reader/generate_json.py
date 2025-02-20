@@ -124,26 +124,41 @@ class TrackInfo:
         # Use the Zoom library
         tracklib = prjdata.tracks[track_num-1]
 
-        # Fill in our fields...
+        # Is the track ON?
+        track_on = tracklib.status == zoomrlib.PLAY # or tracklib.status == zoomrlib.REC
+
+        # Is there no track name?
+        no_track_name = tracklib.file[0:1] == '\x00'
+
+        # Record our track number
         self.track_num = track_num
-        self.file_name = tracklib.file
-        self.track_name = tracklib.file[0:8]
-        self.pan = get_pan_str(tracklib.pan)
+
+        # Fill in our names
+        if no_track_name:
+            self.file_name = ""
+            self.track_name = ""
+        else:
+            self.file_name = tracklib.file
+            self.track_name = self.file_name[0:8]
 
         # Construct data for our EQ Bands
-        hi_band_info = [tracklib.eqhigh_on, tracklib.eqhigh_freq, 0, tracklib.eqhigh_gain]
-        mid_band_info = [tracklib.eqmid_on, tracklib.eqmid_freq, tracklib.eqmid_qfactor, tracklib.eqmid_gain]
-        low_band_info = [tracklib.eqlow_on, tracklib.eqlow_freq, 0, tracklib.eqlow_gain]
+        hi_band_info = [tracklib.eqhigh_on and track_on, tracklib.eqhigh_freq, 0, tracklib.eqhigh_gain]
+        mid_band_info = [tracklib.eqmid_on and track_on, tracklib.eqmid_freq, tracklib.eqmid_qfactor, tracklib.eqmid_gain]
+        low_band_info = [tracklib.eqlow_on and track_on, tracklib.eqlow_freq, 0, tracklib.eqlow_gain]
         self.eq_info = EQInfo(hi_band_info, mid_band_info, low_band_info)
 
-        # Construct other fields
-        self.fader = tracklib.fader
-        self.reverb_send = tracklib.reverb_gain
-        self.reverb_send_on_off = tracklib.reverb_on
-        self.chorus_send = tracklib.chorus_gain
-        self.chorus_send_on_off = tracklib.chorus_on
-        self.invert_on = tracklib.invert_on
-        self.stereo_on = tracklib.stereo_on
+        # Is the track on?
+        if track_on:
+            # Construct other fields
+            self.fader = tracklib.fader
+            self.reverb_send = tracklib.reverb_gain
+            self.reverb_send_on_off = tracklib.reverb_on
+            self.chorus_send = tracklib.chorus_gain
+            self.chorus_send_on_off = tracklib.chorus_on
+            self.invert_on = tracklib.invert_on
+            self.stereo_on = tracklib.stereo_on
+            self.pan = get_pan_str(tracklib.pan)
+
 
 # Define our binary file base class
 class BinaryFile():
@@ -164,63 +179,44 @@ class BinaryFile():
 
 # Define our Effects File class
 class EffectsFile(BinaryFile):
-    # Verify that the binary file looks correct
-    @classmethod
-    def verify_binary(cls, binary_data):
-        # Get the header info
-        header_text = convert_binary_to_ascii(binary_data[0:0+30])
+    # Constructor
+    def __init__(self, file_name):
+        # Use our zoomrlib library to read the file...
+        with zoomrlib.open(file_name, "r") as file:
+            # Load the file
+            self.efxdata = zoomrlib.effect.load(file)
 
-        # Verify that it matches what is expected...
-        if header_text != EFFECTS_FILE_HEADER:
-            raise Exception(Template('Unexpected Effects File [header_text="$header_text"]').substitute(header_text=header_text))
+            # If not a valid file, get out now!
+            if not self.efxdata.valid_header:
+                raise Exception(Template('Unexpected Effects File [header_text="$header_text"]').substitute(header_text=self.efxdata.header))
 
     # Retrieve reverb info
     def get_reverb_info(self):
-        # First, determine whether the bit is sent that tells whether it is ON or OFF
-        bitmask = convert_byte_to_int(self._data[0x62:0x62+1])
-        reverb_on_off = bitmask & (1 << 1) == 0
-
-        # If off, return two empty strings
-        if not reverb_on_off:
+        # If SEND REVERB is off, return two empty strings
+        if not self.efxdata.send_reverb_on:
             return ("", "")
 
         # Get the reverb patch number
-        reverb_num = convert_binary_to_int(self._data[0x5c:0x5c+4])
+        reverb_num = self.efxdata.send_reverb_patch_num
 
         # Get the reverb patch name
-        reverb_name = convert_binary_to_ascii(self._data[0x106:0x106+8])
+        reverb_name = self.efxdata.send_reverb_patch_name
 
         return (str(reverb_num).zfill(2), reverb_name)
 
     # Retrieve chorus info
     def get_chorus_info(self):
-        # First, determine whether the bit is sent that tells whether it is ON or OFF
-        bitmask = convert_byte_to_int(self._data[0x62:0x62+1])
-        chorus_on_off = bitmask & (1 << 0) == 0
-
-        # If off, return two empty strings
-        if not chorus_on_off:
+        # If SEND CHORUS is off, return two empty strings
+        if not self.efxdata.send_chorus_on:
             return ("", "")
 
         # Get the chorus patch number
-        chorus_num = convert_binary_to_int(self._data[0x58:0x58+4])
+        chorus_num = self.efxdata.send_chorus_patch_num
 
         # Get the chorus patch name
-        chorus_name = convert_binary_to_ascii(self._data[0xE8:0xE8+8])
+        chorus_name = self.efxdata.send_chorus_patch_name
 
         return (str(chorus_num).zfill(2), chorus_name)
-
-    # Class level method to return a Project from a file
-    @classmethod
-    def open_file(cls, file_name):
-        # Load the binary data...
-        binary_file = BinaryFile.open_file(file_name)
-
-        # Verify it is correct...
-        cls.verify_binary(binary_file._data)
-
-        # Return an instance of ourself
-        return EffectsFile(binary_file._data)
 
 # Define information about our Master track
 class MasterTrack:
@@ -236,7 +232,7 @@ class ProjectFile:
     def __init__(self, project_number, file_name):
         # Use our zoomrlib library to read the file...
         with zoomrlib.open(file_name, "r") as file:
-            prjdata = zoomrlib.load(file)
+            prjdata = zoomrlib.project.load(file)
 
         # Record the project number
         self.project_number:str = str(project_number).zfill(3)
@@ -263,7 +259,7 @@ class ProjectFile:
         self.chorus_name = ""
 
         # Defaults for extra audio files
-        self.extra_audio_files:[str] = []
+        self.extra_audio_files:list[str] = []
 
     # Try to find a track by a field name and value
     def find_track(self, field_name, field_value):
@@ -367,7 +363,7 @@ class ProjectDir():
                 num_files += 1
 
                 # Read the effect file
-                effects_file = EffectsFile.open_file(dir_entry.path)
+                effects_file = EffectsFile(dir_entry.path)
             elif dir_entry.name == AUDIO_DIR_NAME and dir_entry.is_dir():
                 # Read the contents of this directory in
                 audio_files = listdir(dir_entry.path)
@@ -376,7 +372,7 @@ class ProjectDir():
                 num_files += len(audio_files)
 
         # If we don't have a project file, effects file and audio files array, then complain!
-        if not project_file or not effects_file or len(audio_files) == 0:
+        if not project_file or not effects_file: # or len(audio_files) == 0:
             raise InvalidProjectDirectory(dir_path, "Invalid project directory: missing project file, effects file or audio files!")
 
         # Get the reverb number and name from the effects file

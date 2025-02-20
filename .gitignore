@@ -7,3 +7,5 @@ lib/
 lib64
 pyvenv.cfg
 __pycache__/
+src/zoom_project_reader.egg-info/
+

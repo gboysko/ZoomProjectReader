@@ -26,7 +26,7 @@ if __name__ == '__main__':
             project_file = project_dir.project_file
 
             # Diagnostics
-            print(Template('OK [$num_files files in Project "$name"]').substitute(num_files=project_dir._num_files, name=project_file.project_name))
+            print(Template('OK [$num_files files in Project "$name"]').substitute(num_files=project_dir.num_files, name=project_file.project_name))
         except InvalidProjectDirectory as ipd:
             # Diagnostics
             print(Template("Error [$message]").substitute(message=ipd.message))
